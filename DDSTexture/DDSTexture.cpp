@@ -234,7 +234,7 @@ HRESULT	Get_Image_Info() {
 		RETURN_IF_FAILED(pIWICCOMInfo.As(&pIWICPixelFormatInfo));
 		RETURN_IF_FAILED(pIWICPixelFormatInfo->GetBitsPerPixel(&nImageBPP));
 	}
-	nImageRowByteSize = UINT(floor((UINT64(nImageWidth) * UINT64(nImageBPP))/8.0));//l(UINT64(nImageWidth) * UINT64(nImageBPP) + 7u) / 8u;//floor mul
+	nImageRowByteSize = UINT(floor((UINT64(nImageWidth) * UINT64(nImageBPP)) / 8.0));//l(UINT64(nImageWidth) * UINT64(nImageBPP) + 7u) / 8u;//floor mul
 	nImageByteSize = nImageRowByteSize * nImageHeight;
 	return S_OK;
 }
@@ -341,7 +341,7 @@ UINT										nD3DCompileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION
 #else
 UINT										nD3DCompileFlags = 0;
 #endif // _DEBUG
-TSTRING										strShaderFileName = _T("Shader_Texture.hlsl");
+TSTRING										strShaderFileName = _T("Shader_DDSTexture.hlsl");
 ComPtr<ID3DBlob>							pID3DVertexShaderBlob;//In CPU Memory
 ComPtr<ID3DBlob>							pID3DPixelShaderBlob;
 D3D12_SHADER_BYTECODE						stD3D12VertexShader = {};
