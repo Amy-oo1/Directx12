@@ -25,6 +25,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Multithreading", "Multithre
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultiGPU", "MultiGPU\MultiGPU.vcxproj", "{24382EE4-6EB4-43A1-9253-B04719410669}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Load_Image", "Load_Image\Load_Image.vcxproj", "{C1692B9A-8972-4B81-9D54-EDB0EF5938C5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -121,6 +123,14 @@ Global
 		{24382EE4-6EB4-43A1-9253-B04719410669}.Release|x64.Build.0 = Release|x64
 		{24382EE4-6EB4-43A1-9253-B04719410669}.Release|x86.ActiveCfg = Release|Win32
 		{24382EE4-6EB4-43A1-9253-B04719410669}.Release|x86.Build.0 = Release|Win32
+		{C1692B9A-8972-4B81-9D54-EDB0EF5938C5}.Debug|x64.ActiveCfg = Debug|x64
+		{C1692B9A-8972-4B81-9D54-EDB0EF5938C5}.Debug|x64.Build.0 = Debug|x64
+		{C1692B9A-8972-4B81-9D54-EDB0EF5938C5}.Debug|x86.ActiveCfg = Debug|Win32
+		{C1692B9A-8972-4B81-9D54-EDB0EF5938C5}.Debug|x86.Build.0 = Debug|Win32
+		{C1692B9A-8972-4B81-9D54-EDB0EF5938C5}.Release|x64.ActiveCfg = Release|x64
+		{C1692B9A-8972-4B81-9D54-EDB0EF5938C5}.Release|x64.Build.0 = Release|x64
+		{C1692B9A-8972-4B81-9D54-EDB0EF5938C5}.Release|x86.ActiveCfg = Release|Win32
+		{C1692B9A-8972-4B81-9D54-EDB0EF5938C5}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
