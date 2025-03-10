@@ -11,6 +11,8 @@
 #include<vector>
 #include<unordered_map>
 #include<memory>
+#include <iostream>
+
 
 #include<dxgi1_6.h>
 #ifdef _DEBUG
@@ -42,7 +44,6 @@ using namespace DirectX;
 #include "assimp/Importer.hpp"
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
-
 
 class COMException {
 public:
@@ -80,11 +81,10 @@ _Check_return_ HRESULT Get_CatallogPath(_Out_ wstring* wstrCatallogPath) {
 	return S_OK;
 }
 
-
-
 constexpr UINT GRS_BONE_DATACNT{ 4 };
 constexpr UINT GRS_MAX_BONES{ 256 };
 
+static Assimp::Importer g_assimpImporter{};
 
 class ST_GRS_VERTEX_BONE {
 public:
@@ -148,6 +148,20 @@ struct  ST_GRS_MESH_DATA {
 };
 
 
+HRESULT LoadMesh(ST_GRS_MESH_DATA& stMeshData, UINT nFlag) {
+
+	stMeshData.m_nCurrentAnimationIndex = 0;
+
+	int SizeNeed = WideCharToMultiByte(CP_UTF8, 0, stMeshData.m_wstrFileName.c_str(), static_cast<int>(stMeshData.m_wstrFileName.size()), nullptr, 0, nullptr, nullptr);
+	std::string strFileName(SizeNeed, 0);
+	WideCharToMultiByte(CP_UTF8, 0, stMeshData.m_wstrFileName.c_str(), static_cast<int>(stMeshData.m_wstrFileName.size()), strFileName.data(), SizeNeed, nullptr, nullptr);
+
+	stMeshData.m_paiModel = g_assimpImporter.ReadFile(strFileName, nFlag);
+
+
+	return S_OK;
+}
+
 int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow) {
 	//Path
 	wstring wstrCatallogPath{};
@@ -166,7 +180,6 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 
 		// NOTE : LOAD MODLE
 		{
-
 			//NOTE : Defualt File
 			stMeshData.m_wstrFileName.resize(MAX_PATH);
 			//BUG : Must Use Windows File  Path Separator
