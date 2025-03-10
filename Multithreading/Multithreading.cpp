@@ -278,7 +278,7 @@ D3D12_RASTERIZER_DESC Fill_D3D12_Rasterizer_Desc() {
 		stD3D12RasterizerDesc.ForcedSampleCount = 0;
 		stD3D12RasterizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
 	}
-	
+
 	return stD3D12RasterizerDesc;
 }
 
@@ -470,7 +470,7 @@ _Check_return_ HRESULT Create_D3D12_Direct_Command_Queue(_In_ ID3D12Device4* pID
 	return S_OK;
 }
 
-_Check_return_ HRESULT Create_DXGI_SwapChain(_In_ IDXGIFactory6* pIDXGIFactory6,_In_ DXGI_FORMAT enDXGIFormat, _In_ UINT nWidth, _In_ UINT nHeight, _In_ UINT nBufferCount, _In_ ID3D12CommandQueue* pID3D12CommandQueue, _In_ HWND hWnd, _Outref_ ComPtr<IDXGISwapChain3>& refcomIDXGISwapChain3) {
+_Check_return_ HRESULT Create_DXGI_SwapChain(_In_ IDXGIFactory6* pIDXGIFactory6, _In_ DXGI_FORMAT enDXGIFormat, _In_ UINT nWidth, _In_ UINT nHeight, _In_ UINT nBufferCount, _In_ ID3D12CommandQueue* pID3D12CommandQueue, _In_ HWND hWnd, _Outref_ ComPtr<IDXGISwapChain3>& refcomIDXGISwapChain3) {
 
 	DXGI_SWAP_CHAIN_DESC1 stDXGISwapChainDesc1 = {};
 	{
@@ -521,7 +521,7 @@ _Check_return_ HRESULT Create_D3D12_Command_Allocator(_In_ ID3D12Device4* pID3D1
 	return S_OK;
 }
 
-_Check_return_ HRESULT Create_D3D12_Graphics_Command_List(_In_ ID3D12CommandAllocator* pID3D12CommandAllocator, _In_ D3D12_COMMAND_LIST_TYPE enD3D12CommandListType, _COM_Outptr_ ID3D12GraphicsCommandList** ppID3D12GraphicsCommandList){
+_Check_return_ HRESULT Create_D3D12_Graphics_Command_List(_In_ ID3D12CommandAllocator* pID3D12CommandAllocator, _In_ D3D12_COMMAND_LIST_TYPE enD3D12CommandListType, _COM_Outptr_ ID3D12GraphicsCommandList** ppID3D12GraphicsCommandList) {
 
 	ID3D12Device4* pID3D12Device4 = nullptr;
 	RETURN_IF_FAILED(pID3D12CommandAllocator->GetDevice(__uuidof(*pID3D12Device4), reinterpret_cast<void**>(&pID3D12Device4)));
@@ -632,7 +632,7 @@ _Check_return_ HRESULT Create_D3D12_Pipeline_State(_In_ ID3D12RootSignature* pID
 		//DS
 		//HS
 		//GS
-		
+
 		//Default StreamOutput
 
 		stD3D12GraphicsPipelineStateDesc.BlendState = *pstD3D12BlendDesc;
@@ -872,7 +872,7 @@ _Check_return_ HRESULT Create_DDSTex_Placed_Resource(_In_ ID3D12Device4* pID3D12
 
 ComPtr<ID3D12Device4>						g_pID3D12Device4;
 
-struct ST_GRS_THREAD_PARAMS{
+struct ST_GRS_THREAD_PARAMS {
 	UINT									nIndex;				//ThreadNmae
 
 	DWORD									dwThisThreadID;
@@ -918,8 +918,8 @@ struct VERTEX {
 };
 
 //MVP
-XMFLOAT4X4									g_mat4Model2 = {}; 
-XMFLOAT4X4									g_mat4VP = {};  
+XMFLOAT4X4									g_mat4Model2 = {};
+XMFLOAT4X4									g_mat4VP = {};
 
 //time
 UINT64										g_n64FrameStartTime = 0;
@@ -927,11 +927,11 @@ UINT64										g_n64FrameCurrentTime = 0;
 //------------------------------------------------------------------------------------------------------------
 
 //Camera------------------------------------------------------------------------------------------------------
-XMFLOAT3									g_f3EyePos = XMFLOAT3(0.0f, 5.0f, -10.0f); 
-XMFLOAT3									g_f3LockAt = XMFLOAT3(0.0f, 0.0f, 0.0f);   
-XMFLOAT3									g_f3HeapUp = XMFLOAT3(0.0f, 1.0f, 0.0f);   
+XMFLOAT3									g_f3EyePos = XMFLOAT3(0.0f, 5.0f, -10.0f);
+XMFLOAT3									g_f3LockAt = XMFLOAT3(0.0f, 0.0f, 0.0f);
+XMFLOAT3									g_f3HeapUp = XMFLOAT3(0.0f, 1.0f, 0.0f);
 
-double										g_fPalstance = 10.0f * XM_PI / 180.0f;	
+double										g_fPalstance = 10.0f * XM_PI / 180.0f;
 //------------------------------------------------------------------------------------------------------------
 
 void Load_Mesh_Data(_In_ const wstring* wstrMeshFilePath, _Outref_ vector<VERTEX>& refvecVertexData, _Outref_ vector<UINT>& refvecIndexData) {
@@ -1219,7 +1219,7 @@ UINT WINAPI Render_Thread(void* Param) {
 					// MVP
 					XmatMVP = XMMatrixMultiply(XmatMVP, XMLoadFloat4x4(&g_mat4VP));
 
-					XMStoreFloat4x4(&reinterpret_cast<MVPBuffer*>(pConstBufferData)->m_MVP, XMMatrixTranspose(XmatMVP));	
+					XMStoreFloat4x4(&reinterpret_cast<MVPBuffer*>(pConstBufferData)->m_MVP, XMMatrixTranspose(XmatMVP));
 				}
 
 				//Reset
@@ -1299,11 +1299,11 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	::CoInitialize(nullptr);
 	/*if (S_OK != Windows::Foundation::Initialize(RO_INIT_MULTITHREADED))
 		return  -1;*/
-	//------------------------------------------------------------------------------------------------------------
-	
-	//Const Value-------------------------------------------------------------------------------------------------
+		//------------------------------------------------------------------------------------------------------------
 
-	//Window
+		//Const Value-------------------------------------------------------------------------------------------------
+
+		//Window
 	const wstring								wstrWndClassName = L"Class Name";
 	const wstring								wstrWindowExName = L"Window Name";
 
@@ -1318,7 +1318,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 
 	const wstring								wstrShaderFileName = L"Texture_Cube.hlsl";
 	//------------------------------------------------------------------------------------------------------------
-	
+
 	//Local Value-------------------------------------------------------------------------------------------------
 
 	//Path
@@ -1369,7 +1369,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	const wstring								wstrDDSFileName[nMaxThreadNum] = { L"Assets\\sphere.dds",L"Assets\\Cube.dds",L"Assets\\Plane.dds" };
 	const wstring								wstrMeshFileName[nMaxThreadNum] = { L"Assets\\sphere.txt",L"Assets\\Cube.txt",L"Assets\\Plane.txt" };
 	//------------------------------------------------------------------------------------------------------------
-	
+
 	try {
 
 		//Path----------------------------------------------------------------------------------------------------
@@ -1415,7 +1415,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 			THROW_IF_FAILED(Create_D3D12_Graphics_Command_List(pID3D12PostDirectCommandAllocator.Get(), D3D12_COMMAND_LIST_TYPE_DIRECT, &pID3D12PostDirectCommandList));
 			THROW_IF_FAILED(pID3D12PostDirectCommandList->Close());
 		}
-		
+
 		//Load Assert----------------------------------------------------------------------------------------------
 		{
 			THROW_IF_FAILED(Create_D3D12_Root_Signature(g_pID3D12Device4.Get(), &pID3D12RootSignature));
@@ -1479,12 +1479,12 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 
 				if (nullptr == (g_stThreadParams[Index].hThisThread = reinterpret_cast<HANDLE>(_beginthreadex(nullptr, 0, Render_Thread, reinterpret_cast<LPVOID>(&g_stThreadParams[Index]), CREATE_SUSPENDED, reinterpret_cast<UINT*>(&g_stThreadParams[Index].dwThisThreadID)))))
 					throw  HRESULT_FROM_WIN32(GetLastError());
-					
+
 				vechSubThread.emplace_back(g_stThreadParams[Index].hThisThread);
 			}
 
 			for (UINT Index = 0; Index < nMaxThreadNum; ++Index)
-				if (static_cast<DWORD> (-1) == ::ResumeThread(g_stThreadParams[Index].hThisThread))
+				if (static_cast<DWORD>(-1) == ::ResumeThread(g_stThreadParams[Index].hThisThread))
 					throw  HRESULT_FROM_WIN32(GetLastError());
 		}
 
@@ -1493,7 +1493,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 		UINT										nCurrentFrameIndex = 0;
 
 		D3D12_RESOURCE_BARRIER						stD3D12ResourceBarrierBegin = Fill_D3D12_Barrier_Transition(nullptr, D3D12_RESOURCE_STATE_COMMON, D3D12_RESOURCE_STATE_RENDER_TARGET);
-		D3D12_RESOURCE_BARRIER						stD3D12REsourceBarrierEnd   = Fill_D3D12_Barrier_Transition(nullptr, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_COMMON);
+		D3D12_RESOURCE_BARRIER						stD3D12REsourceBarrierEnd = Fill_D3D12_Barrier_Transition(nullptr, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_COMMON);
 
 		D3D12_CPU_DESCRIPTOR_HANDLE					stD3D12CPURTVHandle = {};
 		D3D12_CPU_DESCRIPTOR_HANDLE					stD3D12CPUDSVHandle = {};
@@ -1501,7 +1501,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 		CAtlArray<ID3D12CommandList*>				atlpID3D12SGraphicsCommandList;
 
 		double										dModelRotationYAngle = 0;
-		
+
 		MSG											msg = {};
 		UINT										nThreadState = 0;
 		vector<HANDLE>								vechWaitThread;
@@ -1533,7 +1533,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 
 			if (WAIT_OBJECT_0 == dwMsgWaitRet) {
 				switch (nThreadState) {
-				//State0£¬Resouece Copy Commmand---------------------------------------------------------------------
+					//State0£¬Resouece Copy Commmand---------------------------------------------------------------------
 				case 0: {
 
 					//Upload Command
@@ -1556,7 +1556,7 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 					}
 				}
 					  break;
-				//State1 Get Pre Render Command And Init-------------------------------------------------------------
+					  //State1 Get Pre Render Command And Init-------------------------------------------------------------
 				case 1: {
 
 					THROW_IF_FAILED(pID3D12PreDirectCommandAllocator->Reset());
@@ -1637,14 +1637,14 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 
 				}
 					  break;
-				//Execute Command------------------------------------------------------------------------------------
+					  //Execute Command------------------------------------------------------------------------------------
 				case 2: {
 
 					THROW_IF_FAILED(pID3D12PostDirectCommandAllocator->Reset());
 					THROW_IF_FAILED(pID3D12PostDirectCommandList->Reset(pID3D12PostDirectCommandAllocator.Get(), nullptr));
 
 					//End
-					stD3D12REsourceBarrierEnd.Transition.pResource=pID3D12RenderTargetResources[nCurrentFrameIndex].Get();
+					stD3D12REsourceBarrierEnd.Transition.pResource = pID3D12RenderTargetResources[nCurrentFrameIndex].Get();
 					pID3D12PostDirectCommandList->ResourceBarrier(1, &stD3D12REsourceBarrierEnd);
 
 					THROW_IF_FAILED(pID3D12PostDirectCommandList->Close());
