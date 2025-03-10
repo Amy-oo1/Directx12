@@ -45,6 +45,16 @@ using namespace DirectX;
 #include "assimp/scene.h"
 #include "assimp/postprocess.h"
 
+const XMMATRIX& MXEqual(XMMATRIX& mxDX, const aiMatrix4x4& mxAI) {
+	mxDX = XMMatrixSet(
+		mxAI.a1, mxAI.a2, mxAI.a3, mxAI.a4,
+		mxAI.b1, mxAI.b2, mxAI.b3, mxAI.b4,
+		mxAI.c1, mxAI.c2, mxAI.c3, mxAI.c4,
+		mxAI.d1, mxAI.d2, mxAI.d3, mxAI.d4);
+	return mxDX;
+}
+
+
 class COMException {
 public:
 	COMException(HRESULT hr, INT Line) : hrError(hr), Line(Line) {}
@@ -83,6 +93,7 @@ _Check_return_ HRESULT Get_CatallogPath(_Out_ wstring* wstrCatallogPath) {
 
 constexpr UINT GRS_BONE_DATACNT{ 4 };
 constexpr UINT GRS_MAX_BONES{ 256 };
+constexpr UINT GRS_INDICES_PER_FACE{ 3 };
 
 static Assimp::Importer g_assimpImporter{};
 
@@ -120,7 +131,7 @@ struct ST_GRS_BONE_DATA {
 };
 
 struct  ST_GRS_MESH_DATA {
-	XMMATRIX m_MxModle;
+	XMMATRIX m_mxModle;
 	wstring m_wstrFileName;
 	const aiScene* m_paiModel;
 
@@ -157,7 +168,97 @@ HRESULT LoadMesh(ST_GRS_MESH_DATA& stMeshData, UINT nFlag) {
 	WideCharToMultiByte(CP_UTF8, 0, stMeshData.m_wstrFileName.c_str(), static_cast<int>(stMeshData.m_wstrFileName.size()), strFileName.data(), SizeNeed, nullptr, nullptr);
 
 	stMeshData.m_paiModel = g_assimpImporter.ReadFile(strFileName, nFlag);
+	if (nullptr == stMeshData.m_paiModel)
+		return E_FAIL;
 
+	stMeshData.m_mxModle = XMMatrixTranspose(MXEqual(stMeshData.m_mxModle, stMeshData.m_paiModel->mRootNode->mTransformation));
+
+	UINT nNumMeshes = stMeshData.m_paiModel->mNumMeshes;
+	if (0 == nNumMeshes)
+		return E_FAIL;
+	stMeshData.m_vecSubMeshData.resize(nNumMeshes);
+
+	const aiMesh* paiSubMesh = nullptr;
+	const aiVector3D Zero3D{ 0.0f,0.0f,0.0f };
+	UINT nNumBones{ 0 };
+	UINT nNumVertices{ 0 };
+	UINT nNumIndices{ 0 };
+
+	for (UINT Index = 0; Index < nNumMeshes; ++Index) {
+		paiSubMesh = stMeshData.m_paiModel->mMeshes[Index];
+
+		stMeshData.m_vecSubMeshData[Index].m_nMaterialIndex = paiSubMesh->mMaterialIndex;
+		stMeshData.m_vecSubMeshData[Index].m_nNumIndices = paiSubMesh->mNumFaces * GRS_INDICES_PER_FACE;
+		stMeshData.m_vecSubMeshData[Index].m_nBaseVertex = nNumVertices;
+		stMeshData.m_vecSubMeshData[Index].m_nBaseIndex = nNumIndices;
+
+		stMeshData.m_vecSubMeshData[Index].m_bHasPosition = paiSubMesh->HasPositions();
+		stMeshData.m_vecSubMeshData[Index].m_bHasNormal = paiSubMesh->HasNormals();
+		stMeshData.m_vecSubMeshData[Index].M_bHasTexCoords = paiSubMesh->HasTextureCoords(0);
+		stMeshData.m_vecSubMeshData[Index].m_bHasTangent = paiSubMesh->HasTangentsAndBitangents();
+
+		nNumVertices += stMeshData.m_paiModel->mMeshes[Index]->mNumVertices;
+		nNumIndices += stMeshData.m_vecSubMeshData[Index].m_nNumIndices;
+
+		for (UINT J = 0; J < paiSubMesh->mNumVertices; ++J) {
+			if (stMeshData.m_vecSubMeshData[Index].m_bHasPosition) {
+				stMeshData.m_vecPositions.push_back(XMFLOAT4{
+					paiSubMesh->mVertices[J].x,
+					paiSubMesh->mVertices[J].y,
+					paiSubMesh->mVertices[J].z,
+					1.0f
+					}
+				);
+			}
+			else
+				stMeshData.m_vecPositions.push_back(XMFLOAT4{ 0.0f,0.0f,0.0f,1.0f });
+
+			if (stMeshData.m_vecSubMeshData[Index].m_bHasNormal) {
+				stMeshData.m_vecNormals.push_back(XMFLOAT4{
+					paiSubMesh->mNormals[J].x,
+					paiSubMesh->mNormals[J].y,
+					paiSubMesh->mNormals[J].z,
+					0.0f
+					}
+				);
+			}
+			else
+				stMeshData.m_vecNormals.push_back(XMFLOAT4{ 0.0f,0.0f,0.0f,0.0f });
+
+			if (stMeshData.m_vecSubMeshData[Index].M_bHasTexCoords) {
+				stMeshData.m_vecTexCoords.push_back(XMFLOAT2{
+					paiSubMesh->mTextureCoords[0][J].x,
+					paiSubMesh->mTextureCoords[0][J].y
+					}
+				);
+			}
+			else
+				stMeshData.m_vecTexCoords.push_back(XMFLOAT2{ 0.0f,0.0f });
+
+			if (stMeshData.m_vecSubMeshData[Index].m_bHasTangent) {
+				stMeshData.m_vecTangents.push_back(XMFLOAT4{
+					paiSubMesh->mTangents[J].x,
+					paiSubMesh->mTangents[J].y,
+					paiSubMesh->mTangents[J].z,
+					0.0f
+					}
+				);
+				stMeshData.mvecBitangents.push_back(XMFLOAT4{
+					paiSubMesh->mBitangents[J].x,
+					paiSubMesh->mBitangents[J].y,
+					paiSubMesh->mBitangents[J].z,
+					0.0f
+					}
+				);
+			}
+			else {
+				stMeshData.m_vecTangents.push_back(XMFLOAT4{ 0.0f,0.0f,0.0f,0.0f });
+				stMeshData.mvecBitangents.push_back(XMFLOAT4{ 0.0f,0.0f,0.0f,0.0f });
+			}
+		}
+
+
+	}
 
 	return S_OK;
 }
